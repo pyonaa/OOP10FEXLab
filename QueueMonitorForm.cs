@@ -20,6 +20,7 @@ namespace OOP10FEXLab
         private Label preparingHeader;
         private Label servingHeader;
         private FlowLayoutPanel preparingPanel;
+        private PictureBox pictureBox1;
         private FlowLayoutPanel servingPanel;
 
         public QueueMonitorForm(OrderManager manager)
@@ -220,6 +221,32 @@ namespace OOP10FEXLab
             {
                 blinkUntil.Remove(number);
             }
+        }
+
+        private void InitializeComponent()
+        {
+            pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            SuspendLayout();
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Image = FINAL_LAB_EXAM_OOP10.Properties.Resources.Screenshot_2026_11_10_130410;
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(862, 943);
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
+            // 
+            // QueueMonitorForm
+            // 
+            ClientSize = new Size(862, 943);
+            Controls.Add(pictureBox1);
+            Name = "QueueMonitorForm";
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ResumeLayout(false);
+
         }
 
         private void UpdateClock()

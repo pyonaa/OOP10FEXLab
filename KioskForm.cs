@@ -26,6 +26,7 @@ namespace OOP10FEXLab
         private Label itemCountLabel;
         private Label totalLabel;
         private Button cancelButton;
+        private PictureBox pictureBox1;
         private Button payButton;
 
         public KioskForm(OrderManager manager)
@@ -388,6 +389,32 @@ namespace OOP10FEXLab
             cart.Clear();
             RefreshCart(null);
             ShowCategory(AllMeals);
+        }
+
+        private void InitializeComponent()
+        {
+            pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            SuspendLayout();
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Image = FINAL_LAB_EXAM_OOP10.Properties.Resources.Screenshot_2026_11_10_130319;
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(1022, 989);
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
+            // 
+            // KioskForm
+            // 
+            ClientSize = new Size(1022, 989);
+            Controls.Add(pictureBox1);
+            Name = "KioskForm";
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ResumeLayout(false);
+
         }
 
         private void ReviewAndPay()

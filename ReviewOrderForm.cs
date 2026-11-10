@@ -12,6 +12,7 @@ namespace OOP10FEXLab
         private readonly RadioButton takeOut = new RadioButton { Text = "Take Out" };
         private readonly RadioButton cash = new RadioButton { Text = "Cash (pay at the counter)", Checked = true };
         private readonly RadioButton card = new RadioButton { Text = "Credit / Debit Card" };
+        private PictureBox pictureBox1;
         private readonly RadioButton eWallet = new RadioButton { Text = "E-wallet (GCash / Maya)" };
 
         public DiningOption Dining
@@ -109,6 +110,32 @@ namespace OOP10FEXLab
             radio.Location = new Point(x, y);
             radio.Size = new Size(width, 26);
             box.Controls.Add(radio);
+        }
+
+        private void InitializeComponent()
+        {
+            pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            SuspendLayout();
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Image = FINAL_LAB_EXAM_OOP10.Properties.Resources.Screenshot_2026_11_10_131059;
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(456, 577);
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
+            // 
+            // ReviewOrderForm
+            // 
+            ClientSize = new Size(456, 577);
+            Controls.Add(pictureBox1);
+            Name = "ReviewOrderForm";
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ResumeLayout(false);
+
         }
     }
 }
