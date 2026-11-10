@@ -12,7 +12,7 @@ namespace OOP10FEXLab
     {
       
         private const string ConnectionString =
-            "server=172.16.24.11;port=3306;database=fastfooddb;uid=root;pwd=;";
+            "server=172.16.24.11;port=3306;database=fastfooddb;uid=root;pwd=1234;";
 
         private const string SelectPackages = "SELECT * FROM package_tbl";
         private const string InsertTransaction =
