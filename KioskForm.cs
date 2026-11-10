@@ -4,11 +4,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using FINAL_LAB_EXAM_OOP10.Properties;
 
 namespace OOP10FEXLab
 {
     // UI #2 - Self-order kiosk: pick package meals, review, then pay.
-    public class KioskForm : Form
+    // The screen layout is made in the Designer (KioskForm.Designer.cs).
+    public partial class KioskForm : Form
     {
         private const string AllMeals = "All Meals";
 
@@ -18,21 +20,16 @@ namespace OOP10FEXLab
         private readonly string imageFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "images");
         private List<MealPackage> menu = new List<MealPackage>();
 
-        private FlowLayoutPanel categoryPanel;
-        private FlowLayoutPanel mealGrid;
-        private Label categoryTitle;
-        private Label sourceLabel;
-        private ListView cartList;
-        private Label itemCountLabel;
-        private Label totalLabel;
-        private Button cancelButton;
-        private PictureBox pictureBox1;
-        private Button payButton;
-
         public KioskForm(OrderManager manager)
         {
+            InitializeComponent();
             this.manager = manager;
-            BuildLayout();
+
+            plusButton.Click += (s, e) => ChangeSelected(1);
+            minusButton.Click += (s, e) => ChangeSelected(-1);
+            removeButton.Click += (s, e) => RemoveSelected();
+            cancelButton.Click += (s, e) => CancelOrder();
+            payButton.Click += (s, e) => ReviewAndPay();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -53,177 +50,6 @@ namespace OOP10FEXLab
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        // ------------------------------------------------------------ layout
-
-        private void BuildLayout()
-        {
-            Text = AppTheme.StoreName + " - Self-Order Kiosk";
-            ClientSize = new Size(1020, 660);
-            MinimumSize = new Size(880, 600);
-            BackColor = AppTheme.Background;
-            Font = AppTheme.MakeFont(10F);
-
-            Panel header = new Panel { Dock = DockStyle.Top, Height = 74, BackColor = AppTheme.Primary, Padding = new Padding(0, 0, 16, 0) };
-
-            // Shows where the meals come from and whether it connected.
-            sourceLabel = new Label
-            {
-                Dock = DockStyle.Right,
-                Width = 300,
-                Font = AppTheme.MakeFont(9.5F, FontStyle.Bold),
-                ForeColor = Color.White,
-                TextAlign = ContentAlignment.MiddleRight
-            };
-            header.Controls.Add(sourceLabel);
-
-            header.Controls.Add(new Label
-            {
-                Text = AppTheme.StoreName,
-                ForeColor = Color.White,
-                Font = AppTheme.MakeFont(22F, FontStyle.Bold),
-                AutoSize = true,
-                Location = new Point(16, 4)
-            });
-            header.Controls.Add(new Label
-            {
-                Text = "Order and Pay here  \u2022  Tap a meal to add it to your order",
-                ForeColor = AppTheme.Accent,
-                Font = AppTheme.MakeFont(10F, FontStyle.Bold),
-                AutoSize = true,
-                Location = new Point(20, 46)
-            });
-
-            categoryPanel = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Left,
-                Width = 170,
-                BackColor = Color.White,
-                FlowDirection = FlowDirection.TopDown,
-                WrapContents = false,
-                AutoScroll = true,
-                Padding = new Padding(10, 12, 10, 12)
-            };
-
-            Panel center = new Panel { Dock = DockStyle.Fill, Padding = new Padding(14, 10, 8, 10) };
-            mealGrid = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoScroll = true };
-            categoryTitle = new Label
-            {
-                Dock = DockStyle.Top,
-                Height = 40,
-                Font = AppTheme.MakeFont(16F, FontStyle.Bold),
-                ForeColor = AppTheme.TextDark,
-                UseMnemonic = false
-            };
-            center.Controls.Add(mealGrid);
-            center.Controls.Add(categoryTitle);
-
-            // Fill control first, then the edges (WinForms docks the last-added first).
-            Controls.Add(center);
-            Controls.Add(BuildCartPanel());
-            Controls.Add(categoryPanel);
-            Controls.Add(header);
-        }
-
-        private Panel BuildCartPanel()
-        {
-            Panel panel = new Panel { Dock = DockStyle.Right, Width = 310, BackColor = Color.White, Padding = new Padding(12) };
-
-            Label title = new Label
-            {
-                Text = "My Order",
-                Dock = DockStyle.Top,
-                Height = 38,
-                Font = AppTheme.MakeFont(15F, FontStyle.Bold),
-                ForeColor = AppTheme.TextDark
-            };
-
-            cartList = new ListView
-            {
-                Dock = DockStyle.Fill,
-                View = View.Details,
-                FullRowSelect = true,
-                MultiSelect = false,
-                HideSelection = false,
-                HeaderStyle = ColumnHeaderStyle.Nonclickable,
-                BorderStyle = BorderStyle.FixedSingle
-            };
-            cartList.Columns.Add("Qty", 36);
-            cartList.Columns.Add("Item", 166);
-            cartList.Columns.Add("Amount", 80, HorizontalAlignment.Right);
-
-            Button plus = AppTheme.MakeButton("+ Add", AppTheme.Success, Color.White);
-            Button minus = AppTheme.MakeButton("\u2212 Less", AppTheme.Accent, AppTheme.TextDark);
-            Button remove = AppTheme.MakeButton("Remove", Color.Gainsboro, AppTheme.TextDark);
-            plus.Click += (s, e) => ChangeSelected(1);
-            minus.Click += (s, e) => ChangeSelected(-1);
-            remove.Click += (s, e) => RemoveSelected();
-            TableLayoutPanel quantityRow = MakeButtonRow(46, plus, minus, remove);
-
-            Panel totals = new Panel { Dock = DockStyle.Bottom, Height = 74 };
-            itemCountLabel = new Label
-            {
-                Dock = DockStyle.Top,
-                Height = 24,
-                ForeColor = AppTheme.Muted,
-                TextAlign = ContentAlignment.BottomLeft
-            };
-            Label totalCaption = new Label
-            {
-                Text = "Order Total",
-                Dock = DockStyle.Left,
-                Width = 110,
-                Font = AppTheme.MakeFont(11F, FontStyle.Bold),
-                ForeColor = AppTheme.TextDark,
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            totalLabel = new Label
-            {
-                Dock = DockStyle.Fill,
-                Font = AppTheme.MakeFont(20F, FontStyle.Bold),
-                ForeColor = AppTheme.Primary,
-                TextAlign = ContentAlignment.MiddleRight
-            };
-            totals.Controls.Add(totalLabel);
-            totals.Controls.Add(totalCaption);
-            totals.Controls.Add(itemCountLabel);
-
-            cancelButton = AppTheme.MakeButton("Cancel Order", Color.Gainsboro, AppTheme.TextDark);
-            payButton = AppTheme.MakeButton("Review && Pay", AppTheme.Primary, Color.White);
-            payButton.Font = AppTheme.MakeFont(12F, FontStyle.Bold);
-            cancelButton.Click += (s, e) => CancelOrder();
-            payButton.Click += (s, e) => ReviewAndPay();
-            TableLayoutPanel actionRow = MakeButtonRow(60, cancelButton, payButton);
-
-            panel.Controls.Add(cartList);
-            panel.Controls.Add(title);
-            panel.Controls.Add(quantityRow);
-            panel.Controls.Add(totals);
-            panel.Controls.Add(actionRow);
-            return panel;
-        }
-
-        private static TableLayoutPanel MakeButtonRow(int height, params Button[] buttons)
-        {
-            TableLayoutPanel row = new TableLayoutPanel
-            {
-                Dock = DockStyle.Bottom,
-                Height = height,
-                ColumnCount = buttons.Length,
-                RowCount = 1,
-                Padding = new Padding(0, 6, 0, 0)
-            };
-            row.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-
-            for (int i = 0; i < buttons.Length; i++)
-            {
-                row.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / buttons.Length));
-                buttons[i].Dock = DockStyle.Fill;
-                buttons[i].Margin = new Padding(i == 0 ? 0 : 3, 0, i == buttons.Length - 1 ? 0 : 3, 0);
-                row.Controls.Add(buttons[i], i, 0);
-            }
-            return row;
-        }
-
         // ------------------------------------------------------------ menu
 
         private void LoadMenu()
@@ -231,44 +57,33 @@ namespace OOP10FEXLab
             try
             {
                 menu = manager.GetMenu();
-                sourceLabel.Text = "\u25CF Connected: " + manager.DataSourceName;
+                sourceLabel.Text = "● Connected: " + manager.DataSourceName;
                 sourceLabel.ForeColor = Color.FromArgb(180, 245, 200);
             }
             catch (Exception ex)
             {
                 menu = new List<MealPackage>();
-                sourceLabel.Text = "\u25CF Not connected: " + manager.DataSourceName;
+                sourceLabel.Text = "● Not connected: " + manager.DataSourceName;
                 sourceLabel.ForeColor = AppTheme.Accent;
                 MessageBox.Show(this, "The package meals could not be loaded from " + manager.DataSourceName + ".\n\n" + ex.Message,
                     "Menu Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+            // Remove the old category buttons (the hidden templates stay).
             foreach (Button old in categoryButtons) old.Dispose();
             categoryButtons.Clear();
-            categoryPanel.Controls.Clear();
-
-            categoryPanel.Controls.Add(new Label
-            {
-                Text = "MENU",
-                Size = new Size(144, 30),
-                Font = AppTheme.MakeFont(11F, FontStyle.Bold),
-                ForeColor = AppTheme.Muted
-            });
 
             List<string> categories = new List<string> { AllMeals };
             categories.AddRange(menu.Select(m => m.Category).Distinct());
 
             foreach (string category in categories)
             {
-                Button button = AppTheme.MakeButton(category, Color.White, AppTheme.TextDark);
-                button.Size = new Size(144, 46);
-                button.Margin = new Padding(0, 0, 0, 6);
-                button.Padding = new Padding(8, 0, 0, 0);
-                button.TextAlign = ContentAlignment.MiddleLeft;
-                button.UseMnemonic = false;
-                button.FlatAppearance.BorderSize = 1;
-                button.FlatAppearance.BorderColor = AppTheme.Line;
+                Button button = new Button();
+                CopyLook(categoryTemplate, button);
+                button.Text = category;
                 button.Tag = category;
+                button.UseMnemonic = false;
+                button.Cursor = Cursors.Hand;
                 button.Click += (s, e) => ShowCategory((string)((Button)s).Tag);
 
                 categoryButtons.Add(button);
@@ -278,19 +93,52 @@ namespace OOP10FEXLab
             ShowCategory(AllMeals);
         }
 
+        // Copies the look of a hidden template button (made in the Designer) onto a new button,
+        // so the category buttons can be restyled in the Designer without touching this code.
+        private static void CopyLook(Button template, Button target)
+        {
+            target.Size = template.Size;
+            target.Margin = template.Margin;
+            target.Padding = template.Padding;
+            target.BackColor = template.BackColor;
+            target.ForeColor = template.ForeColor;
+            target.Font = template.Font;
+            target.FlatStyle = template.FlatStyle;
+            target.FlatAppearance.BorderColor = template.FlatAppearance.BorderColor;
+            target.FlatAppearance.BorderSize = template.FlatAppearance.BorderSize;
+            target.FlatAppearance.MouseOverBackColor = template.FlatAppearance.MouseOverBackColor;
+            target.FlatAppearance.MouseDownBackColor = template.FlatAppearance.MouseDownBackColor;
+            target.TextAlign = template.TextAlign;
+            target.ImageAlign = template.ImageAlign;
+            target.TextImageRelation = template.TextImageRelation;
+        }
+
+        // "All Meals" gets the grid icon, every other category gets the family icon.
+        // Red icons are for normal buttons, white icons for the selected (red) button.
+        private static Image CategoryIcon(string category, bool selected)
+        {
+            if (category == AllMeals)
+            {
+                return selected ? Resources.icon_cat_all_white : Resources.icon_cat_all_red;
+            }
+            return selected ? Resources.icon_cat_family_white : Resources.icon_cat_family_red;
+        }
+
         private void ShowCategory(string category)
         {
             categoryTitle.Text = category;
             foreach (Button button in categoryButtons)
             {
                 bool selected = (string)button.Tag == category;
-                button.BackColor = selected ? AppTheme.Primary : Color.White;
-                button.ForeColor = selected ? Color.White : AppTheme.TextDark;
+                CopyLook(selected ? selectedCategoryTemplate : categoryTemplate, button);
+                button.Image = CategoryIcon((string)button.Tag, selected);
             }
 
             List<MealPackage> meals = category == AllMeals
                 ? menu
                 : menu.Where(m => m.Category == category).ToList();
+
+            mealCountLabel.Text = meals.Count == 1 ? "1 meal" : meals.Count + " meals";
 
             mealGrid.SuspendLayout();
             while (mealGrid.Controls.Count > 0) mealGrid.Controls[0].Dispose();
@@ -302,16 +150,8 @@ namespace OOP10FEXLab
                 mealGrid.Controls.Add(card);
             }
 
-            if (meals.Count == 0)
-            {
-                mealGrid.Controls.Add(new Label
-                {
-                    Text = "No meals to show. Check meals.txt, then press F5.",
-                    AutoSize = true,
-                    ForeColor = AppTheme.Muted,
-                    Margin = new Padding(8)
-                });
-            }
+            // The "No meals to show" message is a hidden label made in the Designer.
+            noMealsLabel.Visible = meals.Count == 0;
 
             mealGrid.ResumeLayout();
             mealGrid.AutoScrollPosition = new Point(0, 0);
@@ -391,32 +231,6 @@ namespace OOP10FEXLab
             ShowCategory(AllMeals);
         }
 
-        private void InitializeComponent()
-        {
-            pictureBox1 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.Dock = DockStyle.Fill;
-            pictureBox1.Image = FINAL_LAB_EXAM_OOP10.Properties.Resources.Screenshot_2026_11_10_130319;
-            pictureBox1.Location = new Point(0, 0);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(1022, 989);
-            pictureBox1.TabIndex = 0;
-            pictureBox1.TabStop = false;
-            // 
-            // KioskForm
-            // 
-            ClientSize = new Size(1022, 989);
-            Controls.Add(pictureBox1);
-            Name = "KioskForm";
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ResumeLayout(false);
-
-        }
-
         private void ReviewAndPay()
         {
             if (cart.IsEmpty) return;
@@ -435,7 +249,7 @@ namespace OOP10FEXLab
 
                     MessageBox.Show(this,
                         "Your order number is  " + order.OrderNumber + "\n\n" +
-                        order.Dining.ToDisplay() + "  \u2022  " + paymentNote + "\n" +
+                        order.Dining.ToDisplay() + "  •  " + paymentNote + "\n" +
                         "Watch the Claim Monitor for your number.\n\n" +
                         "Saved to the transaction record (" + manager.DataSourceName + ").",
                         "Order Placed", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -118,6 +118,78 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="food_burger" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\food_burger.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="food_chicken" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\food_chicken.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="food_default" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\food_default.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="food_family" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\food_family.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="food_pasta" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\food_pasta.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="food_rice" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\food_rice.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_card" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_card.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cash" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_all_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_all_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_all_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_all_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_burger_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_burger_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_burger_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_burger_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_chicken_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_chicken_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_chicken_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_chicken_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_family_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_family_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_family_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_family_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_pasta_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_pasta_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_pasta_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_pasta_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_rice_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_rice_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_cat_rice_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_cat_rice_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_dine_in" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_dine_in.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_ewallet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_ewallet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_take_out" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_take_out.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="logo_bowl" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\logo_bowl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Screenshot 2026-11-10 130319" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Screenshot 2026-11-10 130319.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

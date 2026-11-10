@@ -1,15 +1,15 @@
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Windows.Forms;
+using FINAL_LAB_EXAM_OOP10.Properties;
 
 namespace OOP10FEXLab
 {
-    // One tappable meal tile on the kiosk. Inherits Panel and raises MealClicked.
-    public class MealCard : Panel
+    // One tappable meal tile on the kiosk. Its look is set in the Designer (MealCard.Designer.cs).
+    // This file only fills in the name, price and picture, and handles hover and click.
+    public partial class MealCard : UserControl
     {
-        private readonly ToolTip tip = new ToolTip();
         private readonly Image photo;
         private bool hovering;
 
@@ -18,50 +18,25 @@ namespace OOP10FEXLab
 
         public MealCard(MealPackage meal, string imageFolder)
         {
+            InitializeComponent();
+
             Meal = meal;
-            Size = new Size(164, 200);
-            Margin = new Padding(6);
-            BackColor = Color.White;
-            DoubleBuffered = true;
+            nameLabel.Text = meal.Name;
+            priceLabel.Text = AppTheme.Money(meal.Price);
 
-            PictureBox picture = new PictureBox
-            {
-                Location = new Point(10, 10),
-                Size = new Size(144, 100),
-                SizeMode = PictureBoxSizeMode.Zoom
-            };
+            // Use the photo from the images folder if there is one,
+            // otherwise use a built-in food picture that matches the meal name.
             photo = TryLoadImage(imageFolder, meal.Code);
-            if (photo != null) picture.Image = photo;
-            else picture.Paint += DrawPlaceholder;
-
-            Label name = new Label
-            {
-                Text = meal.Name,
-                Location = new Point(6, 114),
-                Size = new Size(152, 46),
-                Font = AppTheme.MakeFont(9.5F, FontStyle.Bold),
-                ForeColor = AppTheme.TextDark,
-                TextAlign = ContentAlignment.TopCenter,
-                UseMnemonic = false
-            };
-
-            Label price = new Label
-            {
-                Text = AppTheme.Money(meal.Price),
-                Location = new Point(6, 162),
-                Size = new Size(152, 28),
-                Font = AppTheme.MakeFont(12F, FontStyle.Bold),
-                ForeColor = AppTheme.Primary,
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-
-            Controls.Add(picture);
-            Controls.Add(name);
-            Controls.Add(price);
+            if (photo == null) photo = FoodImageFor(meal.Name);
+            foodPicture.Image = photo;
 
             string tipText = meal.Description.Length == 0 ? meal.Name : meal.Name + "\n" + meal.Description;
             Wire(this, tipText);
-            foreach (Control child in Controls) Wire(child, tipText);
+            Wire(innerPanel, tipText);
+            foreach (Control child in innerPanel.Controls) Wire(child, tipText);
+
+            // Free the picture when the card is removed from the screen.
+            Disposed += (s, e) => photo.Dispose();
         }
 
         protected virtual void OnMealClicked()
@@ -80,44 +55,28 @@ namespace OOP10FEXLab
             tip.SetToolTip(control, tipText);
         }
 
+        // The card's own background is the border color, and the white inner panel sits inside it.
+        // On hover the border turns red and gets 1px thicker (Padding 2 instead of 1).
         private void SetHover(bool value)
         {
             if (hovering == value) return;
             hovering = value;
-            Invalidate();
+            BackColor = hovering ? AppTheme.Primary : AppTheme.Line;
+            Padding = new Padding(hovering ? 2 : 1);
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        // Picks a built-in food picture by looking for keywords in the meal name.
+        // "family"/"bucket" and "pasta"/"spaghetti" are checked first so that
+        // e.g. "Spaghetti & Chicken" shows pasta and "Bucket of 6 Chicken" shows the bucket.
+        private static Image FoodImageFor(string mealName)
         {
-            base.OnPaint(e);
-            Color color = hovering ? AppTheme.Primary : AppTheme.Line;
-            int width = hovering ? 3 : 1;
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle,
-                color, width, ButtonBorderStyle.Solid,
-                color, width, ButtonBorderStyle.Solid,
-                color, width, ButtonBorderStyle.Solid,
-                color, width, ButtonBorderStyle.Solid);
-        }
-
-        // Drawn "plate" with the meal code, used when there is no photo.
-        private void DrawPlaceholder(object sender, PaintEventArgs e)
-        {
-            Control box = (Control)sender;
-            Graphics g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-
-            Rectangle plate = new Rectangle(22, 4, box.Width - 44, box.Height - 8);
-            Rectangle food = Rectangle.Inflate(plate, -16, -14);
-
-            using (Brush plateBrush = new SolidBrush(Color.FromArgb(240, 236, 230)))
-            using (Brush foodBrush = new SolidBrush(AppTheme.ForCategory(Meal.Category)))
-            using (Font font = AppTheme.MakeFont(14F, FontStyle.Bold))
-            using (StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-            {
-                g.FillEllipse(plateBrush, plate);
-                g.FillEllipse(foodBrush, food);
-                g.DrawString(Meal.Code, font, Brushes.White, food, center);
-            }
+            string name = mealName.ToLowerInvariant();
+            if (name.Contains("family") || name.Contains("bucket")) return Resources.food_family;
+            if (name.Contains("pasta") || name.Contains("spaghetti")) return Resources.food_pasta;
+            if (name.Contains("burger")) return Resources.food_burger;
+            if (name.Contains("chicken")) return Resources.food_chicken;
+            if (name.Contains("rice")) return Resources.food_rice;
+            return Resources.food_default;
         }
 
         private static Image TryLoadImage(string folder, string code)
@@ -142,16 +101,6 @@ namespace OOP10FEXLab
                 }
             }
             return null;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                tip.Dispose();
-                if (photo != null) photo.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

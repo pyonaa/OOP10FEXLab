@@ -9,24 +9,18 @@ namespace OOP10FEXLab
 {
     // UI #1 - Claim monitor: PREPARING and NOW SERVING order numbers.
     // Updates by itself whenever the kiosk places an order (OrderManager events).
-    public class QueueMonitorForm : Form
+    // The screen layout is made in the Designer (QueueMonitorForm.Designer.cs).
+    public partial class QueueMonitorForm : Form
     {
         private readonly OrderManager manager;
         private readonly System.Windows.Forms.Timer clockTimer = new System.Windows.Forms.Timer();
         private readonly Dictionary<int, DateTime> blinkUntil = new Dictionary<int, DateTime>();
         private bool blinkOn;
 
-        private Label clockLabel;
-        private Label preparingHeader;
-        private Label servingHeader;
-        private FlowLayoutPanel preparingPanel;
-        private PictureBox pictureBox1;
-        private FlowLayoutPanel servingPanel;
-
         public QueueMonitorForm(OrderManager manager)
         {
+            InitializeComponent();
             this.manager = manager;
-            BuildLayout();
 
             manager.OrderPlaced += Manager_OrderChanged;
             manager.OrderStatusChanged += Manager_OrderChanged;
@@ -46,96 +40,6 @@ namespace OOP10FEXLab
             clockTimer.Stop();
             clockTimer.Dispose();
             base.OnFormClosed(e);
-        }
-
-        // ------------------------------------------------------------ layout
-
-        private void BuildLayout()
-        {
-            Text = "Claim Monitor";
-            ClientSize = new Size(560, 660);
-            MinimumSize = new Size(380, 420);
-            BackColor = AppTheme.MonitorScreen;
-            Font = AppTheme.MakeFont(10F);
-
-            Panel header = new Panel { Dock = DockStyle.Top, Height = 64, BackColor = AppTheme.MonitorNavy, Padding = new Padding(16, 0, 16, 0) };
-            clockLabel = new Label
-            {
-                Dock = DockStyle.Right,
-                Width = 130,
-                ForeColor = Color.White,
-                Font = AppTheme.MakeFont(10F),
-                TextAlign = ContentAlignment.MiddleRight
-            };
-            Label title = new Label
-            {
-                Text = "CLAIM MONITOR",
-                Dock = DockStyle.Fill,
-                ForeColor = Color.White,
-                Font = AppTheme.MakeFont(20F, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            header.Controls.Add(title);
-            header.Controls.Add(clockLabel);
-
-            TableLayoutPanel board = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 1, Padding = new Padding(8) };
-            board.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55F));
-            board.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
-            board.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-
-            preparingHeader = MakeColumnHeader("PREPARING", AppTheme.MonitorColumn, AppTheme.MonitorNavy);
-            servingHeader = MakeColumnHeader("NOW SERVING", AppTheme.Success, Color.White);
-            preparingPanel = MakeNumberArea();
-            servingPanel = MakeNumberArea();
-            board.Controls.Add(MakeColumn(preparingHeader, preparingPanel), 0, 0);
-            board.Controls.Add(MakeColumn(servingHeader, servingPanel), 1, 0);
-
-            Label hint = new Label
-            {
-                Dock = DockStyle.Bottom,
-                Height = 42,
-                Text = "Staff: click a PREPARING number when the meal is ready.\nClick a NOW SERVING number once it has been claimed.",
-                ForeColor = AppTheme.MonitorNavy,
-                Font = AppTheme.MakeFont(8.5F),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-
-            Controls.Add(board);
-            Controls.Add(hint);
-            Controls.Add(header);
-        }
-
-        private static Label MakeColumnHeader(string text, Color back, Color fore)
-        {
-            return new Label
-            {
-                Text = text,
-                Dock = DockStyle.Top,
-                Height = 46,
-                BackColor = back,
-                ForeColor = fore,
-                Font = AppTheme.MakeFont(14F, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-        }
-
-        private static FlowLayoutPanel MakeNumberArea()
-        {
-            return new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                AutoScroll = true,
-                Padding = new Padding(6),
-                BackColor = AppTheme.MonitorTile
-            };
-        }
-
-        private static Panel MakeColumn(Label header, FlowLayoutPanel area)
-        {
-            Panel column = new Panel { Dock = DockStyle.Fill, Margin = new Padding(4) };
-            column.Controls.Add(area);
-            column.Controls.Add(header);
-            return column;
         }
 
         // ------------------------------------------------------------ board
@@ -163,8 +67,8 @@ namespace OOP10FEXLab
             List<Order> preparing = manager.GetPreparingOrders();
             List<Order> serving = manager.GetServingOrders();
 
-            preparingHeader.Text = "PREPARING (" + preparing.Count + ")";
-            servingHeader.Text = "NOW SERVING (" + serving.Count + ")";
+            preparingCountLabel.Text = preparing.Count.ToString();
+            servingCountLabel.Text = serving.Count.ToString();
             FillArea(preparingPanel, preparing, false);
             FillArea(servingPanel, serving, true);
         }
@@ -177,28 +81,67 @@ namespace OOP10FEXLab
             area.ResumeLayout();
         }
 
-        private Label MakeNumberTile(Order order, bool serving)
+        // Makes one order-number tile. Its look is copied from the hidden template tiles in the Designer.
+        private Control MakeNumberTile(Order order, bool serving)
         {
-            Label tile = new Label
+            if (!serving)
             {
-                Text = order.OrderNumber.ToString(),
-                Tag = order.OrderNumber,
-                Size = serving ? new Size(150, 64) : new Size(104, 46),
-                Margin = new Padding(5),
-                Font = AppTheme.MakeFont(serving ? 26F : 18F, FontStyle.Bold),
-                ForeColor = serving ? AppTheme.Success : AppTheme.MonitorNavy,
-                BackColor = serving ? Color.White : AppTheme.MonitorScreen,
-                BorderStyle = serving ? BorderStyle.FixedSingle : BorderStyle.None,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Cursor = Cursors.Hand
-            };
-            tile.Click += NumberTile_Click;
-            return tile;
+                Label tile = new Label();
+                CopyLook(preparingTileTemplate, tile);
+                tile.Text = order.OrderNumber.ToString();
+                tile.Tag = order.OrderNumber;
+                tile.Cursor = Cursors.Hand;
+                tile.Click += NumberTile_Click;
+                return tile;
+            }
+
+            // A NOW SERVING tile is a green frame (Panel) with the number label inside it.
+            Panel frame = new Panel();
+            CopyLook(servingTileTemplate, frame);
+
+            Label number = new Label();
+            CopyLook(servingTileLabelTemplate, number);
+            number.Location = servingTileLabelTemplate.Location;
+            number.Text = order.OrderNumber.ToString();
+            frame.Controls.Add(number);
+
+            frame.Tag = order.OrderNumber;
+            number.Tag = order.OrderNumber;
+            frame.Cursor = Cursors.Hand;
+            number.Cursor = Cursors.Hand;
+            frame.Click += NumberTile_Click;
+            number.Click += NumberTile_Click;
+            return frame;
+        }
+
+        // Copies the look of a hidden template control (made in the Designer) onto a new tile,
+        // so the tiles can be restyled in the Designer without touching this code.
+        private static void CopyLook(Control template, Control target)
+        {
+            target.Size = template.Size;
+            target.Margin = template.Margin;
+            target.Padding = template.Padding;
+            target.BackColor = template.BackColor;
+            target.ForeColor = template.ForeColor;
+            target.Font = template.Font;
+
+            // Labels also copy their text alignment and border.
+            if (template is Label templateLabel && target is Label targetLabel)
+            {
+                targetLabel.TextAlign = templateLabel.TextAlign;
+                targetLabel.BorderStyle = templateLabel.BorderStyle;
+            }
+
+            // Panels also copy their border.
+            if (template is Panel templatePanel && target is Panel targetPanel)
+            {
+                targetPanel.BorderStyle = templatePanel.BorderStyle;
+            }
         }
 
         private void NumberTile_Click(object sender, EventArgs e)
         {
-            int orderNumber = (int)((Label)sender).Tag;
+            int orderNumber = (int)((Control)sender).Tag;
             manager.Advance(orderNumber);
         }
 
@@ -214,7 +157,12 @@ namespace OOP10FEXLab
             {
                 DateTime until;
                 bool blinking = blinkUntil.TryGetValue((int)tile.Tag, out until) && now < until;
-                tile.BackColor = blinking && blinkOn ? AppTheme.Accent : Color.White;
+
+                // Switch the number label between the blinking colors and the normal serving colors.
+                Label number = (Label)tile.Controls[0];
+                Label look = blinking && blinkOn ? blinkingTileTemplate : servingTileLabelTemplate;
+                number.BackColor = look.BackColor;
+                number.ForeColor = look.ForeColor;
             }
 
             foreach (int number in blinkUntil.Where(p => p.Value <= now).Select(p => p.Key).ToList())
@@ -223,35 +171,10 @@ namespace OOP10FEXLab
             }
         }
 
-        private void InitializeComponent()
-        {
-            pictureBox1 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.Dock = DockStyle.Fill;
-            pictureBox1.Image = FINAL_LAB_EXAM_OOP10.Properties.Resources.Screenshot_2026_11_10_130410;
-            pictureBox1.Location = new Point(0, 0);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(862, 943);
-            pictureBox1.TabIndex = 0;
-            pictureBox1.TabStop = false;
-            // 
-            // QueueMonitorForm
-            // 
-            ClientSize = new Size(862, 943);
-            Controls.Add(pictureBox1);
-            Name = "QueueMonitorForm";
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ResumeLayout(false);
-
-        }
-
         private void UpdateClock()
         {
-            clockLabel.Text = DateTime.Now.ToString("h:mm:ss tt") + "\n" + DateTime.Now.ToString("ddd, MMM d");
+            timeLabel.Text = DateTime.Now.ToString("h:mm:ss tt");
+            dateLabel.Text = DateTime.Now.ToString("ddd, MMM d");
         }
     }
 }
