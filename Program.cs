@@ -1,4 +1,3 @@
-
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -13,10 +12,14 @@ namespace OOP10FEXLab
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Package meals + transactions record = notepad files beside the .exe (bin\Debug).
-            // When the prof's database code is ready, change only this line to:
-            // IDataStore store = new DatabaseDataStore();
-            IDataStore store = new TextFileDataStore(AppDomain.CurrentDomain.BaseDirectory);
+            // Notepad files beside the .exe (bin\Debug): meals.txt (prices if the DB has none)
+            // and a local copy of each order so the order numbers continue after a restart.
+            TextFileDataStore textFiles = new TextFileDataStore(AppDomain.CurrentDomain.BaseDirectory);
+
+            // Package meals + transaction record = Prof. Raymond's MySQL database (lab network).
+            // Testing outside the lab with no database? Use this line instead:
+            // IDataStore store = textFiles;
+            IDataStore store = new DatabaseDataStore(textFiles);
 
             OrderManager manager;
             try
