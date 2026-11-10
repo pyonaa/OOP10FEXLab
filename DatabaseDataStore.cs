@@ -7,10 +7,10 @@ using MySql.Data.MySqlClient;
 
 namespace OOP10FEXLab
 {
-
+  
     public class DatabaseDataStore : IDataStore
     {
-
+      
         private const string ConnectionString =
             "server=172.16.24.11;port=3306;database=fastfooddb;uid=root;pwd=;";
 
@@ -18,7 +18,7 @@ namespace OOP10FEXLab
         private const string InsertTransaction =
             "INSERT INTO transactions_tbl (package_name, transaction_date) VALUES (@pkg, @date)";
 
-
+       
         private readonly TextFileDataStore localLog;
 
         public DatabaseDataStore(TextFileDataStore localLog)
@@ -32,10 +32,10 @@ namespace OOP10FEXLab
             get { return "MySQL " + DatabaseName(); }
         }
 
-  
+       
         public List<MealPackage> LoadMeals()
         {
-   
+      
             Dictionary<string, MealPackage> extraDetails = LoadExtraDetails();
             List<MealPackage> meals = new List<MealPackage>();
 
@@ -99,6 +99,7 @@ namespace OOP10FEXLab
                 }
             }
 
+           
             try
             {
                 localLog.SaveTransaction(order);
@@ -113,7 +114,7 @@ namespace OOP10FEXLab
             return localLog.GetLastOrderNumber();
         }
 
-    
+     
 
         private Dictionary<string, MealPackage> LoadExtraDetails()
         {
@@ -124,11 +125,10 @@ namespace OOP10FEXLab
             }
             catch (Exception)
             {
-               
+                
             }
             return details;
         }
-
 
         private static Dictionary<string, object> ReadRow(MySqlDataReader reader)
         {

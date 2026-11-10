@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OOP10FEXLab
 {
-
+  
     public interface IDataStore
     {
         string SourceName { get; }
@@ -16,7 +16,7 @@ namespace OOP10FEXLab
         int GetLastOrderNumber();
     }
 
- 
+
     public class TextFileDataStore : IDataStore
     {
         private const char Separator = '|';
@@ -33,11 +33,11 @@ namespace OOP10FEXLab
             transactionsPath = Path.Combine(folder, "transactions.txt");
         }
 
-        public string SourceName { get { return "Notepad files (meals.txt)"; } }
+        public string SourceName { get { return "notepad files (meals.txt)"; } }
         public string MealsPath { get { return mealsPath; } }
         public string TransactionsPath { get { return transactionsPath; } }
 
-
+  
         public List<MealPackage> LoadMeals()
         {
             if (!File.Exists(mealsPath))
@@ -83,7 +83,6 @@ namespace OOP10FEXLab
             return meals;
         }
 
-
         public void SaveTransaction(Order order)
         {
             bool isNewFile = !File.Exists(transactionsPath);
@@ -109,7 +108,6 @@ namespace OOP10FEXLab
             }
         }
 
-   
         public int GetLastOrderNumber()
         {
             int last = 0;

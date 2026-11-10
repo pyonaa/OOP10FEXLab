@@ -10,6 +10,7 @@ namespace OOP10FEXLab
 
     public enum OrderStatus { Preparing, NowServing, Claimed }
 
+
     public static class EnumText
     {
         public static string ToDisplay(this DiningOption dining)
@@ -28,7 +29,7 @@ namespace OOP10FEXLab
         }
     }
 
- 
+   
     public class MealPackage
     {
         public string Code { get; private set; }
@@ -56,7 +57,7 @@ namespace OOP10FEXLab
         }
     }
 
- 
+    
     public class CartItem
     {
         public MealPackage Meal { get; private set; }
@@ -77,7 +78,7 @@ namespace OOP10FEXLab
         }
     }
 
- 
+    
     public class Cart
     {
         private readonly List<CartItem> items = new List<CartItem>();
@@ -118,8 +119,6 @@ namespace OOP10FEXLab
             return items.FirstOrDefault(i => i.Meal.Code == meal.Code);
         }
     }
-
-  
     public class Order
     {
         private readonly List<CartItem> items;
@@ -141,9 +140,8 @@ namespace OOP10FEXLab
             Dining = dining;
             Payment = payment;
             Status = OrderStatus.Preparing;
+
             items = cartItems.Select(i => new CartItem(i.Meal, i.Quantity)).ToList();
         }
     }
 }
-
-
