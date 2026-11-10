@@ -23,6 +23,11 @@ namespace OOP10FEXLab
             lastOrderNumber = Math.Max(store.GetLastOrderNumber(), FirstOrderNumber - 1);
         }
 
+        public string DataSourceName
+        {
+            get { return store.SourceName; }
+        }
+
         public List<MealPackage> GetMenu()
         {
             return store.LoadMeals();
@@ -65,7 +70,7 @@ namespace OOP10FEXLab
         {
             Order order = activeOrders.FirstOrDefault(o => o.OrderNumber == orderNumber);
             if (order == null) return;
-            
+
             if (order.Status == OrderStatus.Preparing)
             {
                 order.Status = OrderStatus.NowServing;

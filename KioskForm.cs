@@ -21,6 +21,7 @@ namespace OOP10FEXLab
         private FlowLayoutPanel categoryPanel;
         private FlowLayoutPanel mealGrid;
         private Label categoryTitle;
+        private Label sourceLabel;
         private ListView cartList;
         private Label itemCountLabel;
         private Label totalLabel;
@@ -61,7 +62,19 @@ namespace OOP10FEXLab
             BackColor = AppTheme.Background;
             Font = AppTheme.MakeFont(10F);
 
-            Panel header = new Panel { Dock = DockStyle.Top, Height = 74, BackColor = AppTheme.Primary };
+            Panel header = new Panel { Dock = DockStyle.Top, Height = 74, BackColor = AppTheme.Primary, Padding = new Padding(0, 0, 16, 0) };
+
+            // Shows where the meals come from (database or notepad) and if it connected.
+            sourceLabel = new Label
+            {
+                Dock = DockStyle.Right,
+                Width = 300,
+                Font = AppTheme.MakeFont(9.5F, FontStyle.Bold),
+                ForeColor = Color.White,
+                TextAlign = ContentAlignment.MiddleRight
+            };
+            header.Controls.Add(sourceLabel);
+
             header.Controls.Add(new Label
             {
                 Text = AppTheme.StoreName,
@@ -217,11 +230,15 @@ namespace OOP10FEXLab
             try
             {
                 menu = manager.GetMenu();
+                sourceLabel.Text = "● Connected: " + manager.DataSourceName;
+                sourceLabel.ForeColor = Color.FromArgb(180, 245, 200);
             }
             catch (Exception ex)
             {
                 menu = new List<MealPackage>();
-                MessageBox.Show(this, "The package meals could not be loaded.\n\n" + ex.Message,
+                sourceLabel.Text = "● Not connected: " + manager.DataSourceName;
+                sourceLabel.ForeColor = AppTheme.Accent;
+                MessageBox.Show(this, "The package meals could not be loaded from " + manager.DataSourceName + ".\n\n" + ex.Message,
                     "Menu Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
@@ -392,7 +409,8 @@ namespace OOP10FEXLab
                     MessageBox.Show(this,
                         "Your order number is  " + order.OrderNumber + "\n\n" +
                         order.Dining.ToDisplay() + "  •  " + paymentNote + "\n" +
-                        "Watch the Claim Monitor for your number.",
+                        "Watch the Claim Monitor for your number.\n\n" +
+                        "Saved to the transaction record (" + manager.DataSourceName + ").",
                         "Order Placed", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     cart.Clear();
